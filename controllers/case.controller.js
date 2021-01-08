@@ -1,13 +1,21 @@
-// Retrieve and return all notes from the database.
-exports.findAll = (req, res) => {
-    Case.find()
+// Find a single note with a noteId
+exports.findOne = (req, res) => {
+    Case.findById(req.params.id)
     .then(cases => {
+        if(!cases) {
+            return res.status(404).send({
+                message: "Note not found with id " + req.params.id
+            });            
+        }
         res.send(cases);
     }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving notes."
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "Note not found with id " + req.params.id
+            });                
+        }
+        return res.status(500).send({
+            message: "Error retrieving note with id " + req.params.id
         });
     });
 };
-
-// Find a single note with a noteId
