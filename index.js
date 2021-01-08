@@ -1,1 +1,1 @@
-const app= express();
+mongoose.connect('mongodb://localhost/cov', { useNewUrlParser: true } )
