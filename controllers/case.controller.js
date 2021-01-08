@@ -1,35 +1,21 @@
-// Update a note identified by the noteId in the request
-exports.update = (req, res) => {
-    // Validate Request
-    if(!req.body.content) {
-        return res.status(400).send({
-            message: "Note content can not be empty"
-        });
-    }
-
-    // Find note and update it with the request body
-    Case.findByIdAndUpdate(req.params.id, {
-        date: req.body.date,
-        state: req.body.state,
-        country: req.body.country,
-        deaths: req.body.deaths,
-        cases: req.body.cases,
-    }, {new: true})
+// Delete a note with the specified noteId in the request
+exports.delete = (req, res) => {
+    Case.findByIdAndRemove(req.params.id)
     .then(casee => {
         if(!casee) {
             return res.status(404).send({
-                message: "Case not found with id " + req.params.id
+                message: "casee not found with id " + req.params.id
             });
         }
-        res.send(casee);
+        res.send({message: "casee deleted successfully!"});
     }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+                message: "casee not found with id " + req.params.id
             });                
         }
         return res.status(500).send({
-            message: "Error updating note with id " + req.params.noteId
+            message: "Could not delete note with id " + req.params.noteId
         });
     });
 };
